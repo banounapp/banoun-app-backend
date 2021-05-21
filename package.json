@@ -26,7 +26,8 @@
   },
   "scripts": {
     "start": "node .",
-    "dev": "set NODE_ENV=development && nodemon .",
+    "dev": "set NODE_ENV=development&& nodemon .",
+    "prod": "set NODE_ENV=production&& nodemon .",
     "debug": "nodemon --inspect ."
   },
   "author": "",
