@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start": "node .",
-    "dev": "nodemon .",
+    "dev": "set NODE_ENV=development && nodemon .",
     "debug": "nodemon --inspect ."
   },
   "author": "",
