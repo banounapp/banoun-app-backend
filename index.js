@@ -1,16 +1,14 @@
 const express = require("express");
-
 const app = express();
-const jwt = require("jsonwebtoken");
+
 const connectDB = require("./config/db");
 const session = require("express-session");
 const passport = require("passport");
 const config = require("config");
 
-const User = require("./models/users");
-
 require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
+require("./passports/PassportSerialize");
 
 connectDB();
 
@@ -40,20 +38,6 @@ app.get("/", function (req, res) {
 
 app.get("/success", (req, res) => res.send(userProfile));
 app.get("/error", (req, res) => res.send("error logging in"));
-
-//////// Passport serialize/////////////
-
-passport.serializeUser((user, done) => {
-  let token = jwt.sign({ id: user.id }, "SECRET");
-  done(null, token);
-});
-
-passport.deserializeUser((token, done) => {
-  let decode = jwt.verify(token, "SECRET");
-  User.findById(decode.id, function (err, id) {
-    done(err, id);
-  });
-});
 
 /////////////////////////////////////////// GOOGLE AUTH ////////////////////////////////////
 
