@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 
+// security with hemlet
+const helmet = require("helmet");
+
 // database
 require("./config/db");
 
@@ -12,15 +15,25 @@ require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
 
 app.set("view engine", "ejs");
-
-////////   session use   /////
-
+app.set("trust proxy", 1); ////////
+////////   App use   /////
+app.use(helmet());
 app.use(express.json());
+
+let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
 app.use(
   session({
     resave: false,
     saveUninitialized: true,
-    secret: "SECRET",
+    secret: "S3C%M&ET", ////// Unkknown secret
+    cookie: {
+      /////// cookie experiation date
+      httpOnly: true,
+      // domain: "www.banoun.com",
+      // path: "localhost:5000/homepage",
+      expires: expiryDate,
+    },
   })
 );
 app.use(passport.initialize());
