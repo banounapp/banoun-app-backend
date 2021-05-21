@@ -1,24 +1,21 @@
 const express = require("express");
 const app = express();
 
-const connectDB = require("./config/db");
+// database
+require("./config/db");
+
+// passport congif
 const session = require("express-session");
 const passport = require("passport");
-const config = require("config");
-
+require("./passports/PassportSerialize");
 require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
-require("./passports/PassportSerialize");
-
-connectDB();
 
 app.set("view engine", "ejs");
 
-//body parsing for body in request
-app.use(express.json());
-
 ////////   session use   /////
 
+app.use(express.json());
 app.use(
   session({
     resave: false,
@@ -26,12 +23,10 @@ app.use(
     secret: "SECRET",
   })
 );
-
-// setup passport
-
 app.use(passport.initialize());
 app.use(passport.session());
 
+////////////////////////////////////// Route to check if works ///////////////
 app.get("/", function (req, res) {
   res.render("pages/auth");
 });
