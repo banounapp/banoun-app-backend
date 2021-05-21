@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 
+const dotenv = require("dotenv");
 // security with hemlet
 const helmet = require("helmet");
 
@@ -54,16 +55,16 @@ app.get("/homepage", (req, res) => {
 });
 
 app.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  `/google`,
+  passport.authenticate(`google`, { scope: ["profile", "email"] })
 );
 
 app.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/failed" }),
+  `/google/callback`,
+  passport.authenticate(`google`, { failureRedirect: `/failed` }),
   function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect("/homepage");
+    res.redirect(`/homepage`);
   }
 );
 
