@@ -15,21 +15,19 @@ require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
 
 app.set("view engine", "ejs");
-app.set("trust proxy", 1); ////////
-////////   App use   /////
-app.use(helmet());
-app.use(express.json());
+app.set("trust proxy", 1);
 
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
+////////   App use   /////
+app.use(helmet());
+app.use(express.json());
 app.use(
   session({
     resave: false,
     saveUninitialized: true,
     secret: "S3C%M&ET", ////// Unkknown secret
     cookie: {
-      /////// cookie experiation date
-      httpOnly: true,
       // domain: "www.banoun.com",
       // path: "localhost:5000/homepage",
       expires: expiryDate,
