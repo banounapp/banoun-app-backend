@@ -1,0 +1,9 @@
+{
+  "mongoURI": "mongodb+srv://omar1234:omar@banoun.lrzmb.mongodb.net/main?retryWrites=true&w=majority",
+  "jwtSecret": "notSecret",
+  "Client_Id_Google": "514695062110-nitna4o5lg81s1ms951jfora2qr57gi3.apps.googleusercontent.com",
+  "Client_Secret_Google": "yV30BGvj2mvgKNm4Q0DwqfUl",
+  "Client_Id_Facebook": "381108473169197",
+  "Client_Secret_Facebook": "e3a94926d51a044e85e69355fd5ce6c7",
+  "Character": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "banoun-backend-app",
+  "version": "1.0.0",
+  "description": "Final Project",
+  "main": "index.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.6",
+    "dotenv": "^9.0.2",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-validator": "^6.10.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.7",
+    "mongoose-findorcreate": "^3.0.0",
+    "nodemailer": "^6.6.0",
+    "nodemailer-html-to-text": "^3.2.0",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon .",
+    "debug": "nodemon --inspect ."
+  },
+  "author": "",
+  "license": "ISC"
+}
