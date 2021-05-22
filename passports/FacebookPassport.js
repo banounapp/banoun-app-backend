@@ -11,12 +11,11 @@ passport.use(
     {
       clientID: FacebookClientID,
       clientSecret: FacebookClientSecret,
-      callbackURL: "http://localhost:5000/facebook/callback",
+      callbackURL: "/facebook/callback",
       profileFields: ["email", "name"],
     },
     function (accessToken, refreshToken, profile, done) {
       /// get profile data from facebook
-      console.log(profile);
       const { last_name, first_name, email, picture } = profile._json;
       User.findOrCreate(
         {

@@ -14,7 +14,6 @@ passport.use(
       callbackURL: `/google/callback`,
     },
     function (accessToken, refreshToken, profile, done) {
-      console.log(profile);
       const { name, given_name, family_name, email, picture } = profile._json;
 
       User.findOrCreate(
