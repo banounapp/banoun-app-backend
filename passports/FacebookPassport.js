@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: FacebookClientID,
       clientSecret: FacebookClientSecret,
-      callbackURL: "/facebook",
+      callbackURL: "/facebook/callback",
       profileFields: ["email", "name"],
     },
     function (accessToken, refreshToken, profile, done) {
