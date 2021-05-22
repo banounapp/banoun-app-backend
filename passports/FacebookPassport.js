@@ -16,6 +16,7 @@ passport.use(
     },
     function (accessToken, refreshToken, profile, done) {
       /// get profile data from facebook
+      console.log(profile);
       const { last_name, first_name, email, picture } = profile._json;
       User.findOrCreate(
         {
