@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 // security with hemlet
 const helmet = require("helmet");
 
+// Cors
+let cors = require('cors')
+ 
 // database
 require("./config/db");
 
@@ -37,6 +40,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors())
 
 ////////////////////////////////////// Route to check if works ///////////////
 app.get("/", function (req, res) {
