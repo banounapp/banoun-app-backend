@@ -21,7 +21,14 @@ require("./passports/FacebookPassport");
 app.set("view engine", "ejs");
 app.set("trust proxy", 1);
 
+
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+//body parsing for body in request
+app.use(express.json());
+app.use(express.static('public'));
+
+////////   session use   /////
 
 ////////   App use   /////
 app.use(helmet());
@@ -91,5 +98,7 @@ const PORT = process.env.PORT || 5000;
 //routers init
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/category", require("./routes/category"));
+app.use("/api/upload", require("./routes/img"));
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
