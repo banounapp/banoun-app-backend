@@ -8,9 +8,11 @@ const passport = require("passport");
 const config = require("config");
 
 const User = require("./models/users");
-
 require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
+
+
+
 
 connectDB();
 
@@ -18,6 +20,7 @@ app.set("view engine", "ejs");
 
 //body parsing for body in request
 app.use(express.json());
+app.use(express.static('public'));
 
 ////////   session use   /////
 
