@@ -96,7 +96,5 @@ const PORT = process.env.PORT || 5000;
 //routers init
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/category", require("./routes/category"));
-app.use("/api/upload", require("./routes/img"));
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
