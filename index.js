@@ -12,7 +12,6 @@ const User = require("./models/users");
 require("./passports/GooglePassport");
 require("./passports/FacebookPassport");
 
-
 connectDB();
 
 app.set("view engine", "ejs");
