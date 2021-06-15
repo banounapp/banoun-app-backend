@@ -40,7 +40,7 @@ userRouter.post(
     try {
       // destructing Body => username , password
 
-      const { username, password } = req.body;
+      const { username, firstName,lastName,password,email} = req.body;
 
       // get user
 
@@ -58,7 +58,7 @@ userRouter.post(
 
       // create user in DataBase
       const user = await User.create({
-        username,
+        username,firstName,lastName,email,
         password: hashPassword,
         confirmationCode: confirm,
       });
