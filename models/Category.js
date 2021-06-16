@@ -5,6 +5,11 @@ const categorySchema = new mongoose.Schema({
     type: String,
     // required:true
   },
+  description: {
+    type: String,
+    // required:true
+  },
+  image: {},
   sub_category: [
     {
       name: {
@@ -12,6 +17,13 @@ const categorySchema = new mongoose.Schema({
 
         // required: true
       },
+      description:{
+        type: String,
+
+
+      },
+      image: {},
+
 
       articles: [
         {

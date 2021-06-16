@@ -7,7 +7,6 @@ const multer = require('multer');
 const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const category=require('../models/Category');
-const Image=require('../models/im');
 const dbConnection =require('../config/db');
 const routerimg = new express.Router();
 const connection=require('../connection');

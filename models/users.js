@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    // required: true,
   },
   password: {
     type: String,
@@ -35,14 +35,14 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   status: {
-    type: String, 
-    enum: ['Pending', 'Active'],
-    default: 'Pending'
+    type: String,
+    enum: ["Pending", "Active"],
+    default: "Pending",
   },
-  confirmationCode: { 
-    type: String, 
-    unique: true },
-
+  confirmationCode: {
+    type: String,
+    unique: true,
+  },
 });
 
 // plugin findorcreate
