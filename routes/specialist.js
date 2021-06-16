@@ -45,7 +45,9 @@ connection.once('open', () => {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 Router.post(
-    "/",upload.single('image'),
+    "/",
+    // upload.single('image'),
+    upload.array("image",4 ),
     [
       body("username", "username is required").not().isEmpty(),
       body( "password","Please enter a password within 6 or more character"
@@ -71,7 +73,9 @@ Router.post(
       try {
         // destructing Body => username , password
   
-        const { username, password ,email,bio,NationalID,gender,image,phone,job} = req.body;
+        const { username, password ,email,bio,gender,image,phone,job,city,
+          address,
+          Specialization} = req.body;
   
         // get user
   
@@ -93,12 +97,16 @@ Router.post(
           password: hashPassword,
           email,
           bio,
-          NationalID,
+          NationalID:req.files[1],
           gender,
           phone,
           job,
           confirmationCode: confirm,
-          image:req.file
+          image:req.files[0],
+          certification:req.files[2],
+          city,
+          address,
+          Specialization
         });
   
         // create a JWT Token
@@ -126,5 +134,29 @@ Router.post(
     }
   );
   
+//////////////////////////////////////////////////////////
+  Router.get('/',async(req,res)=>{
+
+    try {
+    
+    
+        const specialist=await Specialist.find()
+    
+        res.json(specialist);
+        
+    } catch (err) {
+    
+        console.error(err.message);
+        res.status(500).send('Server Error');
+        
+    }
+    
+    
+    });
+//////////////////////////////////////////////
+
+
+
+
 
   module.exports=Router;

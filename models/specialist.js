@@ -10,9 +10,9 @@ const specialistSchema = Schema({
     required: true,
   },
   NationalID:{
-    type: Number,
-    required: true,
+   
   },
+  certification:{},
   email: {
     type: String,
     required: true,
@@ -39,6 +39,24 @@ phone:{
     required: true,
 
 },
+city:{
+  type: String,
+  required: true,
+
+},
+address:{
+  type: String,
+  required: true,
+
+
+},
+Specialization:{
+  type: String, 
+  // enum: ['علم نفس', 'معالج نفسي ','معالج نفسي واستشاري أسري'],
+
+
+},
+
 job:{
     type: String, 
     required: true,
@@ -53,7 +71,20 @@ status: {
   confirmationCode: { 
     type: String, 
     unique: true },
+price:{
+  type:Number
+},
+schedule:[{
 
+
+}],
+
+rate:{
+  type:Number
+,
+default:4
+
+}
 });
 
 
