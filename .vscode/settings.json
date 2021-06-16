@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/ba961329-cbc2-4352-b241-31752f662fd0/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/banoun",
+    "appService.deploySubpath": "."
+}

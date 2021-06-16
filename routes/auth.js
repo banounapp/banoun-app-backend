@@ -50,7 +50,11 @@ router.post(
       // check if user already exists!
 
       if (!checkUser) {
-        return res.status(500).json({ error: [`Wrong Username Or Password`] });
+        return res.status(200).json({
+          isSuccess: false,
+          code: 1,
+          error: "Wrong Username Or Password",
+        });
       }
 
       const isMatch = bycrpt.compare(password, checkUser.password);
@@ -64,15 +68,17 @@ router.post(
         });
 
         if (checkUser.status != "Active") {
-          return res.status(401).send({
-            message: "Pending Account. Please Verify Your Email!",token
+          return res.status(200).send({
+            isSuccess: false,
+            code: 2,
+            message: "Pending Account. Please Verify Your Email!",
           });
         }
-   
-
-        console.log(token);
-
-        res.send({ token });
+        res.send({
+          code: 0,
+          isSuccess: true,
+          data: token,
+        });
       }
     } catch (err) {
       console.error(err.message);
@@ -81,30 +87,26 @@ router.post(
   }
 );
 
-
 //confirm code
 
-router.get('/confirm/:confirmationCode',auth, async (req,res)=>{
+router.get("/confirm/:confirmationCode", auth, async (req, res) => {
   User.findOne({
-      confirmationCode: req.params.confirmationCode,
-    })
-      .then((user) => {
-        if (!user) {
-          return res.status(404).send({ message: "User Not found." });
-        }
-  
-        user.status = "Active";
-        user.save((err) => {
-          if (err) {
-
-            console.log(err)
-            res.status(500).send({ message: err });
-          }
-        });
-      })
-      .catch((e) => console.log("error", e));
+    confirmationCode: req.params.confirmationCode,
   })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
 
-
+      user.status = "Active";
+      user.save((err) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send({ message: err });
+        }
+      });
+    })
+    .catch((e) => console.log("error", e));
+});
 
 module.exports = router;

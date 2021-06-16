@@ -17,4 +17,4 @@ const dbConnection = async (req, res) => {
   }
 };
 
-module.exports = dbConnection;
+module.exports = dbConnection();

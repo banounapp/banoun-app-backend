@@ -15,6 +15,8 @@ userRouter.post(
   "/",
   [
     body("username", "username is required").not().isEmpty(),
+    body("firstName", "firstName is required").not().isEmpty(),
+    body("lastName", "lastName is required").not().isEmpty(),
     body(
       "password",
       "Please enter a password within 6 or more character"
@@ -40,7 +42,9 @@ userRouter.post(
     try {
       // destructing Body => username , password
 
-      const { username, firstName,lastName,password,email} = req.body;
+
+      const { username, password, firstName, lastName,email } = req.body;
+
 
       // get user
 
@@ -58,11 +62,17 @@ userRouter.post(
 
       // create user in DataBase
       const user = await User.create({
-        username,firstName,lastName,email,
+        username,
+        firstName,
+        lastName,
+        email,
         password: hashPassword,
+        firstName,
+        lastName,
         confirmationCode: confirm,
       });
 
+      console.log(user);
       // create a JWT Token
       const secret = config.get("jwtSecret");
 

@@ -52,7 +52,7 @@ connection.once('open', () => {
 
 
 
-//get api/all categories
+// get api/all categories
 
 Router.get('/',async(req,res)=>{
 
@@ -74,6 +74,31 @@ Router.get('/',async(req,res)=>{
     });
     
   
+
+    
+// //get api/all  name & id categories
+
+// Router.get('/',async(req,res)=>{
+
+//     try {
+    
+    
+//         const category=await Category.find({}, { projection: { _id: 1, name: 1 } });
+    
+//         res.json(category);
+        
+//     } catch (err) {
+    
+//         console.error(err.message);
+//         res.status(500).send('Server Error');
+        
+//     }
+    
+    
+//     });
+    
+  
+    
 //get api/one category
 
 Router.get('/:category_id',async(req,res)=>{
