@@ -140,7 +140,7 @@ Router.post(
     try {
     
     
-        const specialist=await Specialist.find()
+        const specialist=await Specialist.find({statusjob: "approval"})
     
         res.json(specialist);
         
@@ -154,7 +154,6 @@ Router.post(
     
     });
 //////////////////////////////////////////////
-
 
 
 
