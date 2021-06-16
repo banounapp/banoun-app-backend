@@ -4,7 +4,7 @@ const config = require("config");
 const auth = (req, res, next) => {
   const Token = req.header("Authorizarion");
 
-  if (!token) {
+  if (!Token) {
     return res.status(400).json({ error: "Token Not Found" });
   }
   try {
