@@ -102,5 +102,8 @@ app.use("/api/category", require("./routes/category"));
 app.use("/api/upload", require("./routes/img"));
 app.use("/api/specialist",require("./routes/specialist"));
 app.use("/api/appointment",require("./routes/appointment"));
+app.use("/api/specialistReviews",require("./routes/specialistReviews"));
+app.use("/api/SiteReviews",require("./routes/SiteReviews"));
+
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
