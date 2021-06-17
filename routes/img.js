@@ -10,6 +10,10 @@ const category=require('../models/Category');
 const dbConnection =require('../config/db');
 const routerimg = new express.Router();
 const connection=require('../connection');
+const User = require("../models/users");
+const auth =require('../middleware/auth');
+
+
 
 const storage = new GridFsStorage({
     url: "mongodb+srv://omar1234:omar@banoun.lrzmb.mongodb.net/main?retryWrites=true&w=majority",
@@ -71,5 +75,23 @@ routerimg.delete('/delete/:_id', (req, res) => {
         res.status(200).send({ success: true, message: "Image was deleted successfully" })
     })
 })
+//////////////////////////////////////////////////////////////////
+
+routerimg.post('/user',auth,upload.single('image'),async (req, res) => {
+    try {
+        console.log("Uploading ...... ")
+      
+        let user = await User.findOneAndUpdate({_id:req.signedId}, {image: req.file.filename  }, {new: true }).exec()
+        console.log(user);
+
+        res.status(200).send({ user, message: "Uploaded successfully", success: true })
+    } catch (error) {
+        res.status(404).send({ error, message: "Unable to upload", success: false })
+
+    }
+})
+
+
+
 
 module.exports=routerimg;
