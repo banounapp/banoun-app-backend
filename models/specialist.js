@@ -84,6 +84,11 @@ rate:{
 ,
 default:4
 
+},
+role:{
+  type: String, 
+
+  default:"specialist"
 }
 });
 
