@@ -16,6 +16,8 @@ const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 // const dbConnection =require('../config/db');
 const connection =require('../connection');
+const Appointment=require('../models/appointment');
+
 const { equal } = require("assert");
 /////////////////////////////////////////////////////////////////////////////////
 const storage = new GridFsStorage({
@@ -257,8 +259,7 @@ Router.get("/confirm/:confirmationCode", auth, async (req, res) => {
     .catch((e) => console.log("error", e));
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////
-Router.post(
-  "/schedule",auth,
+Router.post("/schedule",auth,
   [
     body("date", "date is required").exists(),
     body("time", "time is required").exists(),
@@ -270,12 +271,23 @@ Router.post(
         errors: errors.array(),
       });
     }
-    try {
 
+    
+    try {
       const { date, time } = req.body;
       // get specialist
+      const appointment = await Appointment.create({
+        Specialist:req.signedId,
+        date,
+        time,
+      });
+
+console.log(appointment);
       const specialist = await Specialist.findById(req.signedId);
+
       // check if user specialist exists!
+
+
       if (!specialist) {
         return res.status(200).json({
           isSuccess: false,
@@ -284,12 +296,12 @@ Router.post(
         });
       }
 
-      const newappointment={
-        date,
-        time
-    }
+    //   const newappointment={
+    //     date,
+    //     time
+    // }
     
-    specialist.schedule.unshift(newappointment);
+    specialist.schedule.unshift(appointment._id);
     await specialist.save();
     res.json(specialist)
 

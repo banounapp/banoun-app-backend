@@ -76,17 +76,20 @@ price:{
 },
 schedule:[{
 
-date:{
-  
-},
-time:{
 
-},
-status: {
-  type: String, 
-  enum: ['available', 'reserved'],
-  default: 'available'
-},
+  type:mongoose.Schema.Types.ObjectId,
+  ref:'appointment'
+// date:{
+  
+// },
+// time:{
+
+// },
+// status: {
+//   type: String, 
+//   enum: ['available', 'reserved'],
+//   default: 'available'
+// },
 
 }],
 

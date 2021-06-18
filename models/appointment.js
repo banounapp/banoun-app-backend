@@ -16,7 +16,7 @@ const appointmentSchema = Schema({
         required: true,        
        },
  paymentMethod :{
-    required: true,
+    // required: true,
     type: String, 
     enum: ['online', 'cash'],
 
@@ -28,8 +28,8 @@ const appointmentSchema = Schema({
     },
     status: {
         type: String, 
-        enum: ['Pending', 'approval'],
-        default: 'Pending'
+        enum: ['available', 'reserved'],
+        default: 'available'
       },
   
 });
