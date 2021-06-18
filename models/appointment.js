@@ -6,9 +6,9 @@ const appointmentSchema = Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     },
-    specialist:{
+    Specialist:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'specialist' 
+        ref:'Specialist' 
     },
     date:{
 

@@ -99,7 +99,6 @@ userRouter.post(
   }
 );
 
-
 userRouter.get('/',auth, async(req,res)=>{
   try{ 
       const user=await User.findOne({_id:req.signedId})

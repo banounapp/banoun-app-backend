@@ -7,7 +7,7 @@ const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Specialist = require("../models/specialist");
 const nodemailer = require("../config/nodemailer.config");
-
+const auth =require('../middleware/auth');
 //for image 
 const crypto = require('crypto');
 const path = require('path')
@@ -43,7 +43,6 @@ connection.once('open', () => {
     gfs.collection('uploads')
 });
 //////////////////////////////////////////////////////////////////////////////////////////
-
 Router.post(
     "/",
     // upload.single('image'),
@@ -133,9 +132,8 @@ Router.post(
       }
     }
   );
-  
 //////////////////////////////////////////////////////////
-  Router.get('/',async(req,res)=>{
+Router.get('/',async(req,res)=>{
 
     try {
     
@@ -153,8 +151,217 @@ Router.post(
     
     
     });
-//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+Router.get('/:id',async(req,res)=>{
 
+  try {
+  
+  
+      const specialist=await Specialist.find({_id:req.params.id})
+  
+      res.json(specialist);
+      
+  } catch (err) {
+  
+      console.error(err.message);
+      res.status(500).send('Server Error');
+      
+  }
+  
+  
+  });
+
+//////////////////////////////////////////////////////////////////////////////////////////
+Router.post(
+  "/login",
+  [
+    body("email", "email is required").exists(),
+    body("password", "Password is required").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    try {
+      // destructing Body =>  username , password
+
+      const { email, password } = req.body;
+
+      // get user
+
+      const checkUser = await Specialist.findOne({ email }).exec();
+
+      // check if user already exists!
+
+      if (!checkUser) {
+        return res.status(200).json({
+          isSuccess: false,
+          code: 1,
+          error: "Wrong email Or Password",
+        });
+      }
+
+      const isMatch = bycrpt.compare(password, checkUser.password);
+
+      if (isMatch) {
+        // create a JWT Token
+        const secret = config.get("jwtSecret");
+
+        const token = jwt.sign({ id: checkUser._id }, secret, {
+          expiresIn: 360000,
+        });
+
+        if (checkUser.status != "Active") {
+          return res.status(200).send({
+            isSuccess: false,
+            code: 2,
+            message: "Pending Account. Please Verify Your Email!",
+          });
+        }
+        res.send({
+          code: 0,
+          isSuccess: true,
+          data: token,
+        });
+      }
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ errors: "Server Error" });
+    }
+  }
+);
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//confirm code
+
+Router.get("/confirm/:confirmationCode", auth, async (req, res) => {
+  Specialist.findOne({
+    confirmationCode: req.params.confirmationCode,
+  })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "User Not found." });
+      }
+
+      user.status = "Active";
+      user.save((err) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send({ message: err });
+        }
+      });
+    })
+    .catch((e) => console.log("error", e));
+});
+////////////////////////////////////////////////////////////////////////////////////////////////
+Router.post(
+  "/schedule",auth,
+  [
+    body("date", "date is required").exists(),
+    body("time", "time is required").exists(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    try {
+
+      const { date, time } = req.body;
+      // get specialist
+      const specialist = await Specialist.findById(req.signedId);
+      // check if user specialist exists!
+      if (!specialist) {
+        return res.status(200).json({
+          isSuccess: false,
+          code: 1,
+          error: "حدث مشكلة ",
+        });
+      }
+
+      const newappointment={
+        date,
+        time
+    }
+    
+    specialist.schedule.unshift(newappointment);
+    await specialist.save();
+    res.json(specialist)
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ errors: "Server Error" });
+    }
+  }
+);
+
+///////////////////////////////////////////////////////////////////////
+
+  
+Router.post('/edit',[
+  auth
+],
+
+async (req,res) =>{
+
+
+
+const {
+username,
+price,
+job,
+phone,
+age,
+city,
+
+}=req.body;
+
+//Build profile object
+
+const profileFields={};
+// profileFields._id=req.signedId;
+
+if(username) profileFields.username=username;
+if(price) profileFields.price=price;
+if(phone) profileFields.phone=phone;
+if(age) profileFields.age=age;
+if(city) profileFields.city=city;
+if(job) profileFields.job=job;
+
+
+
+try{
+
+let user = await Specialist.findOne({_id:req.signedId});
+
+if(user){
+    
+    user=await Specialist.findOneAndUpdate(
+      {_id:req.signedId},
+   
+      {$set: profileFields},
+    { new:true }
+    );
+
+    res.json(user); 
+   }
+
+
+res.json("not found the Specialist")
+
+
+}catch(err){
+
+res.status(500).send(err);
+
+}
+
+});
 
 
 

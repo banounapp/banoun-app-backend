@@ -76,6 +76,17 @@ price:{
 },
 schedule:[{
 
+date:{
+  
+},
+time:{
+
+},
+status: {
+  type: String, 
+  enum: ['available', 'reserved'],
+  default: 'available'
+},
 
 }],
 
