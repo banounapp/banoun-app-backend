@@ -49,13 +49,13 @@ Router.post(
   "/",
   // upload.single('image'),
   upload.array("image", 4),
-  [
-    body("username", "username is required").not().isEmpty(),
-    body(
-      "password",
-      "Please enter a password within 6 or more character"
-    ).isLength({ min: 6 }),
-  ],
+  // [
+  //   body("username", "username is required").not().isEmpty(),
+  //   body(
+  //     "password",
+  //     "Please enter a password within 6 or more character"
+  //   ).isLength({ min: 6 }),
+  // ],
   async (req, res) => {
     //code
 
@@ -89,6 +89,8 @@ Router.post(
         address,
         Specialization,
       } = req.body;
+
+      console.log(req.body, req.files);
 
       // get user
 
