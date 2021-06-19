@@ -49,13 +49,7 @@ Router.post(
   "/",
   // upload.single('image'),
   upload.array("image", 4),
-  // [
-  //   body("username", "username is required").not().isEmpty(),
-  //   body(
-  //     "password",
-  //     "Please enter a password within 6 or more character"
-  //   ).isLength({ min: 6 }),
-  // ],
+  // git
   async (req, res) => {
     //code
 
@@ -90,7 +84,7 @@ Router.post(
         Specialization,
       } = req.body;
 
-      console.log(req.body, req.files);
+      //console.log(req.body, req.files);
 
       // get user
 
@@ -112,13 +106,13 @@ Router.post(
         password: hashPassword,
         email,
         bio,
-        NationalID: req.files[1],
+        NationalID: req.files && req.files[1],
         gender,
         phone,
         job,
         confirmationCode: confirm,
-        image: req.files[0],
-        certification: req.files[2],
+        image: req.files && req.files[0],
+        certification: req.files && req.files[2],
         city,
         address,
         Specialization,
