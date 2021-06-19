@@ -1,50 +1,83 @@
 const express = require("express");
 const Router = express.Router();
-const mongoose = require('mongoose');
-const Appointment=require('../models/appointment');
-const auth =require('../middleware/auth');
+const mongoose = require("mongoose");
+const Appointment = require("../models/appointment");
+const auth = require("../middleware/auth");
 const Specialist = require("../models/specialist");
+const User = require("../models/users");
 
+Router.post("/:id/:appointmentID", auth, async (req, res) => {
+  try {
+    const { paymentMethod } = req.body;
 
-Router.post('/:id',auth,async(req,res)=>{
+    //find appointment record by id  //then update the record with status reserved   //and add user id to the record
+    const appointment = await Appointment.findOneAndUpdate(
+      { _id: req.params.appointmentID },
+      {
+        status: "reserved",
+        user: req.signedId,
+        paymentMethod,
+      }
+    );
 
-    try {
-        
-        const {date,time,paymentMethod}=req.body;
+    await appointment.save();
 
-        const specialist=await Specialist.findById(req.params.id);
-        if(specialist){
-            const appointment = await Appointment.create({
-                specialist:req.params.id,
-                user:req.signedId,
-                date,
-                time,
-                paymentMethod
+    const user = await User.findById(req.signedId);
 
-              });
-              await appointment.save();
+    user.schedule.unshift(appointment._id);
+    await user.save();
 
-              res.send({
-                message: "شكرا لك , سيتم تأكيد الحجز ",
-              });
-        }
-else {
     res.send({
-        message: "يوجد مشكلة حاول مرة اخري",
-      });
-}
+      message: "شكرا لك , سيتم تأكيد الحجز ",
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
+//////////////////////////////////////////////////////////
+Router.get("/specialist/:id", async (req, res) => {
+  try {
+    const specialist = await Specialist.findById(req.params.id);
 
-    } catch (err) {
-
-        console.error(err.message);
-        res.status(500).send('Server Error');
-                
+    const arrAppointment = [];
+    for (i = 0; i < specialist.schedule.length; i++) {
+      const appointment = await Appointment.findById(specialist.schedule[i]);
+      arrAppointment.push(appointment);
     }
 
-})
+    res.json(arrAppointment);
 
+    // const appointment=await Appointment.find({Specialist:req.params.id}).populate("user")
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+///////////////////////////////////////////////////////////////
 
+Router.get("/user/:id", async (req, res) => {
+  try {
+    // const appointment = await Appointment.find({
+    //   user: req.params.id,
+    // }).populate("Specialist");
 
+    // res.json(appointment);
 
-module.exports=Router;
+    const user = await User.findById(req.params.id);
+
+    const arrAppointment = [];
+    for (i = 0; i < user.schedule.length; i++) {
+      const appointment = await Appointment.findById(user.schedule[i]);
+      arrAppointment.push(appointment);
+    }
+
+    res.json(arrAppointment);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+module.exports = Router;

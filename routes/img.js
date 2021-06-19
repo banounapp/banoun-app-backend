@@ -12,9 +12,6 @@ const routerimg = new express.Router();
 const connection=require('../connection');
 const User = require("../models/users");
 const auth =require('../middleware/auth');
-
-
-
 const storage = new GridFsStorage({
     url: "mongodb+srv://omar1234:omar@banoun.lrzmb.mongodb.net/main?retryWrites=true&w=majority",
     file: (req, file) => {
