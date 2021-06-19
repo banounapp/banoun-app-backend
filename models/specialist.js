@@ -1,18 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const specialistSchema = Schema({
   username: {
     type: String,
     required: true,
   },
-  bio:{
+  bio: {
     type: String,
     required: true,
   },
-  NationalID:{
-   
-  },
-  certification:{},
+  NationalID: {},
+  certification: {},
   email: {
     type: String,
     required: true,
@@ -24,89 +22,77 @@ const specialistSchema = Schema({
     type: String,
     default: null,
   },
-  image: {
-  },
+  image: {},
 
   statusjob: {
-    type: String, 
-    enum: ['Pending', 'approval'],
-    default: 'Pending'
+    type: String,
+    enum: ["Pending", "approval"],
+    default: "Pending",
   },
 
-phone:{
-    type: Number, 
+  phone: {
+    type: Number,
     unique: true,
-    required: true,
-
-},
-city:{
-  type: String,
-  required: true,
-
-},
-address:{
-  type: String,
-  required: true,
-
-
-},
-Specialization:{
-  type: String, 
-  // enum: ['علم نفس', 'معالج نفسي ','معالج نفسي واستشاري أسري'],
-
-
-},
-
-job:{
-    type: String, 
-    required: true,
-
-
-},
-status: {
-    type: String, 
-    enum: ['Pending', 'Active'],
-    default: 'Pending'
+    req8uired: true,
   },
-  confirmationCode: { 
-    type: String, 
-    unique: true },
-price:{
-  type:Number
-},
-schedule:[{
+  city: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  Specialization: {
+    type: String,
+    // enum: ['علم نفس', 'معالج نفسي ','معالج نفسي واستشاري أسري'],
+  },
 
+  job: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Active"],
+    default: "Pending",
+  },
+  confirmationCode: {
+    type: String,
+    unique: true,
+  },
+  price: {
+    type: Number,
+  },
+  schedule: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "appointment",
+      // date:{
 
-  type:mongoose.Schema.Types.ObjectId,
-  ref:'appointment'
-// date:{
-  
-// },
-// time:{
+      // },
+      // time:{
 
-// },
-// status: {
-//   type: String, 
-//   enum: ['available', 'reserved'],
-//   default: 'available'
-// },
+      // },
+      // status: {
+      //   type: String,
+      //   enum: ['available', 'reserved'],
+      //   default: 'available'
+      // },
+    },
+  ],
 
-}],
+  rate: {
+    type: Number,
+    default: 4,
+  },
+  role: {
+    type: String,
 
-rate:{
-  type:Number
-,
-default:4
-
-},
-role:{
-  type: String, 
-
-  default:"specialist"
-}
+    default: "specialist",
+  },
 });
 
+const Specialist = mongoose.model("Specialist", specialistSchema);
 
-const Specialist = mongoose.model('Specialist', specialistSchema);
-
-module.exports = Specialist
+module.exports = Specialist;
