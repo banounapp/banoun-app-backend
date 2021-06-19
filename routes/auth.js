@@ -89,7 +89,7 @@ router.post(
 
 //confirm code
 
-router.get("/confirm/:confirmationCode", auth, async (req, res) => {
+router.get("/confirm/:confirmationCode", async (req, res) => {
   User.findOne({
     confirmationCode: req.params.confirmationCode,
   })
