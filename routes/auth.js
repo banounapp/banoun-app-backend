@@ -105,6 +105,7 @@ router.get("/confirm/:confirmationCode", async (req, res) => {
           res.status(500).send({ message: err });
         }
       });
+      res.send({ message: "تم تأكيد الايميل " });
     })
     .catch((e) => console.log("error", e));
 });
