@@ -216,6 +216,16 @@ Router.post(
             message: "Pending Account. Please Verify Your Email!",
           });
         }
+
+        if (checkUser.statusjob != "approval") {
+          return res.status(200).send({
+            isSuccess: false,
+            code: 2,
+            message:
+              "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت ",
+          });
+        }
+
         res.send({
           code: 0,
           isSuccess: true,
