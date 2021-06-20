@@ -100,6 +100,7 @@ Router.post(
       //bycrypt password
       let hashPassword = await bycrpt.hash(password, 10);
 
+      console.log(req.files && req.files[0]);
       // create user in DataBase
       const specialist = await Specialist.create({
         username,
