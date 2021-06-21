@@ -140,10 +140,17 @@ userRouter.post(
           { _id: req.signedId },
 
           { $set: profileFields },
-          { new: true }
+          { new: true },
+          (err, document) => {
+            if (!err) {
+              console.log(document);
+            } else {
+              console.log(err);
+            }
+          }
         );
 
-        res.json(profileFields);
+        return res.json(profileFields);
       }
 
       res.json("not found the user");
