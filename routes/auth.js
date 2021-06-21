@@ -89,7 +89,7 @@ router.post(
 
 //confirm code
 
-router.get("/confirm/:confirmationCode", auth, async (req, res) => {
+router.get("/confirm/:confirmationCode", async (req, res) => {
   User.findOne({
     confirmationCode: req.params.confirmationCode,
   })
@@ -105,6 +105,7 @@ router.get("/confirm/:confirmationCode", auth, async (req, res) => {
           res.status(500).send({ message: err });
         }
       });
+      res.send({ message: "تم تأكيد الايميل " });
     })
     .catch((e) => console.log("error", e));
 });

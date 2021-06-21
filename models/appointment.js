@@ -6,9 +6,9 @@ const appointmentSchema = Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     },
-    specialist:{
+    Specialist:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'specialist' 
+        ref:'Specialist' 
     },
     date:{
 
@@ -16,7 +16,7 @@ const appointmentSchema = Schema({
         required: true,        
        },
  paymentMethod :{
-    required: true,
+    // required: true,
     type: String, 
     enum: ['online', 'cash'],
 
@@ -28,8 +28,8 @@ const appointmentSchema = Schema({
     },
     status: {
         type: String, 
-        enum: ['Pending', 'approval'],
-        default: 'Pending'
+        enum: ['available', 'reserved'],
+        default: 'available'
       },
   
 });

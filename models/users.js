@@ -6,6 +6,16 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  age: {
+    type: Number,
+  },
+
+  phone: {
+    type: Number,
+  },
+
+  image: {},
+
   firstName: {
     type: String,
     required: true,
@@ -43,6 +53,15 @@ const userSchema = mongoose.Schema({
     type: String,
     unique: true,
   },
+  city: {
+    type: String,
+  },
+  schedule: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "appointment",
+    },
+  ],
 });
 
 // plugin findorcreate
