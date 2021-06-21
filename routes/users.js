@@ -140,7 +140,14 @@ userRouter.post(
           { _id: req.signedId },
 
           { $set: profileFields },
-          { new: true }
+          { new: true },
+          (err, document) => {
+            if (!err) {
+              console.log(document);
+            } else {
+              console.log(err);
+            }
+          }
         );
 
         return res.json(profileFields);
