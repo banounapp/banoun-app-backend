@@ -22,7 +22,7 @@ Router.post("/:id/:appointmentID", auth, async (req, res) => {
 
     await appointment.save();
 
-    const user = await User.findById(req.signedId);
+    const user = await User.findBygitId(req.signedId);
 
     user.schedule.unshift(appointment._id);
     await user.save();

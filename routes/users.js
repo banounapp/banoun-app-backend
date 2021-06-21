@@ -1,6 +1,6 @@
 const express = require("express");
 const userRouter = express.Router();
-const auth =require('../middleware/auth');
+const auth = require("../middleware/auth");
 
 const { body, validationResult } = require("express-validator");
 const config = require("config");
@@ -43,9 +43,7 @@ userRouter.post(
     try {
       // destructing Body => username , password
 
-
-      const { username, password, firstName, lastName,email } = req.body;
-
+      const { username, password, firstName, lastName, email } = req.body;
 
       // get user
 
@@ -99,87 +97,67 @@ userRouter.post(
   }
 );
 
-userRouter.get('/',auth, async(req,res)=>{
-  try{ 
-      const user=await User.findOne({_id:req.signedId})
-  
-  
-      if(!user){
-          return res.status(400).json({msg:'Not found the user'});
-      }
-  
-      res.json(user);
-  
-  }catch(err){
-  console.error(err.message);
-  res.status(500).send('Server Error');
+userRouter.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.signedId });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Not found the user" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
-  
-  });
-  
-
-
-  
-userRouter.post('/edit',[
-    auth
-  ],
-
-async (req,res) =>{
-
-
-
-const {firstName,
-  lastName,
-  email,
-  phone,
-  age,city}=req.body;
-
-//Build profile object
-
-const profileFields={};
-// profileFields._id=req.signedId;
-
-if(firstName) profileFields.firstName=firstName;
-if(lastName) profileFields.lastName=lastName;
-if(phone) profileFields.phone=phone;
-if(age) profileFields.age=age;
-if(city) profileFields.city=city;
-if(email) profileFields.email=email;
-
-
-
-try{
-
-  let user = await User.findOne({_id:req.signedId});
-
-  if(user){
-      
-      user=await User.findOneAndUpdate({_id:req.signedId},
-     
-        {$set: profileFields},
-      { new:true }
-      );
-
-      res.json(profileFields);  }
-
-
- res.json("not found the user")
-
-
-}catch(err){
-
-  res.status(500).send(err);
-
-}
-
-
-
 });
 
+userRouter.post(
+  "/edit",
+  [auth],
 
+  async (req, res) => {
+    const { firstName, lastName, email, phone, age, city } = req.body;
 
+    // console.log(req.body);
+    //Build profile object
 
+    const profileFields = {};
+    // profileFields._id=req.signedId;
 
+    if (firstName) profileFields.firstName = firstName;
+    if (lastName) profileFields.lastName = lastName;
+    if (phone) profileFields.phone = phone;
+    if (age) profileFields.age = age;
+    if (city) profileFields.city = city;
+    if (email) profileFields.email = email;
 
+    try {
+      let user = await User.findOne({ _id: req.signedId });
+
+      if (user) {
+        user = await User.findOneAndUpdate(
+          { _id: req.signedId },
+
+          { $set: profileFields },
+          { new: true },
+          (err, document) => {
+            if (!err) {
+              console.log(document);
+            } else {
+              console.log(err);
+            }
+          }
+        );
+
+        return res.json(profileFields);
+      }
+
+      res.json("not found the user");
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
+);
 
 module.exports = userRouter;
