@@ -143,7 +143,7 @@ userRouter.post(
           { new: true }
         );
 
-        res.json(profileFields);
+        return res.json(profileFields);
       }
 
       res.json("not found the user");
