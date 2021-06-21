@@ -119,7 +119,7 @@ userRouter.post(
   async (req, res) => {
     const { firstName, lastName, email, phone, age, city } = req.body;
 
-    // console.log(req.body);
+    console.log(req.body);
     //Build profile object
 
     const profileFields = {};
