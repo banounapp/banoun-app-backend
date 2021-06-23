@@ -95,6 +95,8 @@ router.post(
           code: 0,
           isSuccess: true,
           data: token,
+          token:token , 
+          type:type
         });
       }
     } catch (err) {
