@@ -11,7 +11,7 @@ Router.get("/dataInitialization", auth, async (req, res) => {
     const specialist = await Specialist.findOne({ _id: req.signedId });
 
 
-    if (specialist.length ==0) {
+    if (!specialist) {
       const user = await User.findOne({ _id: req.signedId });
 
       if (!user) {
