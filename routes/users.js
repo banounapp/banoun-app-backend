@@ -117,7 +117,7 @@ userRouter.post(
   [auth],
 
   async (req, res) => {
-    const { firstName, lastName, email, phone, age, city } = req.body;
+    const { firstName, lastName, username, phone, age, city } = req.body;
 
     console.log(req.body);
     //Build profile object
@@ -130,7 +130,7 @@ userRouter.post(
     if (phone) profileFields.phone = phone;
     if (age) profileFields.age = age;
     if (city) profileFields.city = city;
-    if (email) profileFields.email = email;
+    if (username) profileFields.username = username;
 
     try {
       let user = await User.findOne({ _id: req.signedId });
@@ -150,7 +150,7 @@ userRouter.post(
           }
         );
 
-        return res.json(profileFields);
+        return res.json(user);
       }
 
       res.json("not found the user");

@@ -321,7 +321,7 @@ Router.post(
   [auth],
 
   async (req, res) => {
-    const { username, price, job, phone, age, city } = req.body;
+    const { username, price, job, phone, age, city, bio } = req.body;
 
     //Build profile object
 
@@ -329,6 +329,8 @@ Router.post(
     // profileFields._id=req.signedId;
 
     if (username) profileFields.username = username;
+    if (bio) profileFields.bio = bio;
+
     if (price) profileFields.price = price;
     if (phone) profileFields.phone = phone;
     if (age) profileFields.age = age;
@@ -343,17 +345,39 @@ Router.post(
           { _id: req.signedId },
 
           { $set: profileFields },
-          { new: true }
+          { new: true },
+          (err, document) => {
+            if (!err) {
+              console.log(document);
+            } else {
+              console.log(err);
+            }
+          }
         );
 
-        res.json(user);
+        return res.json(user);
       }
-
       res.json("not found the Specialist");
     } catch (err) {
       res.status(500).send(err);
     }
   }
 );
+////////////////////////////////////////////////////////////////////////
+
+Router.get("/", auth, async (req, res) => {
+  try {
+    const specialist = await Specialist.findOne({ _id: req.signedId });
+
+    if (!specialist || specialist.statusjob !== "approval") {
+      return res.status(400).json({ msg: "Not found the specialist" });
+    }
+
+    res.json(specialist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = Router;
