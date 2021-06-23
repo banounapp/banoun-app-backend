@@ -6,6 +6,8 @@ const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Specialist = require("../models/specialist");
+
 
 // Check Auth
 router.get("/", auth, async (req, res) => {
@@ -43,35 +45,50 @@ router.post(
 
       const { username, password } = req.body;
 
+      if(!username || !password){
+        return res.status(400).send("please provide username and password")
+      }
       // get user
 
-      const checkUser = await User.findOne({ username }).exec();
+      const SPECIALIST = await Specialist.findOne({ username:username });
 
+      
       // check if user already exists!
+      let USER ;
+      let type = "Specialist" 
+      if (!SPECIALIST) {
+         USER = await User.findOne({ username:username });
 
-      if (!checkUser) {
-        return res.status(200).json({
-          isSuccess: false,
-          code: 1,
-          error: "Wrong Username Or Password",
-        });
+        if(!USER){
+
+          return res.status(200).json({
+            isSuccess: false,
+            code: 1,
+            error: "Wrong Username Or Password",
+          });
+        }
+        else{
+          type = "User"
+        }
       }
 
-      const isMatch = bycrpt.compare(password, checkUser.password);
+      const FoundUser = USER || SPECIALIST;
+
+      const isMatch = bycrpt.compare(password, FoundUser.password);
 
       if (isMatch) {
         // create a JWT Token
         const secret = config.get("jwtSecret");
 
-        const token = jwt.sign({ id: checkUser._id }, secret, {
+        const token = jwt.sign({ id: FoundUser._id }, secret, {
           expiresIn: 360000,
         });
 
-        if (checkUser.status != "Active") {
+        if (type =="User"? FoundUser.status != "Active" :FoundUser.statusjob != "approval") {
           return res.status(200).send({
             isSuccess: false,
             code: 2,
-            message: "Pending Account. Please Verify Your Email!",
+            message: (type =="User"?"Pending Account. Please Verify Your Email!":"جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت"),
           });
         }
         res.send({
