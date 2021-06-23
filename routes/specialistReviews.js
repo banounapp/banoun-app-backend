@@ -12,7 +12,7 @@ Router.post("/:id", auth, async (req, res) => {
     const specialist = await Specialist.findById(req.params.id);
     if (specialist) {
       const specialistReviews = await SpecialistReviews.create({
-        Specialist: req.params.id,
+        specialist: req.params.id,
         user: req.signedId,
         text,
         rate,
@@ -37,7 +37,7 @@ Router.post("/:id", auth, async (req, res) => {
 Router.get("/:id", async (req, res) => {
   try {
     const specialistReviews = await SpecialistReviews.find({
-      Specialist: req.params.id,
+      specialist: req.params.id,
     }).populate("user");
 
     res.json(specialistReviews);

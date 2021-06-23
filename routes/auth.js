@@ -43,50 +43,35 @@ router.post(
 
       const { username, password } = req.body;
 
-      if(!username || !password){
-        return res.status(400).send("please provide username and password")
-      }
       // get user
 
-      const SPECIALIST = await Specialist.findOne({ username:username });
+      const checkUser = await User.findOne({ username }).exec();
 
-      
       // check if user already exists!
-      let USER ;
-      let type = "Specialist" 
-      if (!SPECIALIST) {
-         USER = await User.findOne({ username:username });
 
-        if(!USER){
-
-          return res.status(200).json({
-            isSuccess: false,
-            code: 1,
-            error: "Wrong Username Or Password",
-          });
-        }
-        else{
-          type = "User"
-        }
+      if (!checkUser) {
+        return res.status(200).json({
+          isSuccess: false,
+          code: 1,
+          error: "Wrong Username Or Password",
+        });
       }
 
-      const FoundUser = USER || SPECIALIST;
-
-      const isMatch = bycrpt.compare(password, FoundUser.password);
+      const isMatch = bycrpt.compare(password, checkUser.password);
 
       if (isMatch) {
         // create a JWT Token
         const secret = config.get("jwtSecret");
 
-        const token = jwt.sign({ id: FoundUser._id }, secret, {
+        const token = jwt.sign({ id: checkUser._id }, secret, {
           expiresIn: 360000,
         });
 
-        if (type =="User"? FoundUser.status != "Active" :FoundUser.statusjob != "approval") {
+        if (checkUser.status != "Active") {
           return res.status(200).send({
             isSuccess: false,
             code: 2,
-            message: (type =="User"?"Pending Account. Please Verify Your Email!":"جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت"),
+            message: "Pending Account. Please Verify Your Email!",
           });
         }
         res.send({

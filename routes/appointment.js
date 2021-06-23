@@ -5,7 +5,6 @@ const Appointment = require("../models/appointment");
 const auth = require("../middleware/auth");
 const Specialist = require("../models/specialist");
 const User = require("../models/users");
-/****************user Appointment ***************/
 
 Router.post("/:id/:appointmentID", auth, async (req, res) => {
   try {
@@ -37,8 +36,7 @@ Router.post("/:id/:appointmentID", auth, async (req, res) => {
   }
 });
 
-/****************get all Appointments for specialist  ***************/
-// id => specialist
+//////////////////////////////////////////////////////////
 Router.get("/specialist/:id", async (req, res) => {
   try {
     const specialist = await Specialist.findById(req.params.id);

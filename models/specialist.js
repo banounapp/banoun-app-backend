@@ -84,7 +84,7 @@ const specialistSchema = Schema({
 
   rate: {
     type: Number,
-    default: 0,
+    default: 4,
   },
   role: {
     type: String,
