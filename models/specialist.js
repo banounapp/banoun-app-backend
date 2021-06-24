@@ -81,7 +81,12 @@ const specialistSchema = Schema({
       // },
     },
   ],
-
+  events: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+    },
+  ],
   rate: {
     type: Number,
     default: 0,
@@ -90,6 +95,10 @@ const specialistSchema = Schema({
     type: String,
 
     default: "specialist",
+  },
+  eventnumber: {
+    type: Number,
+    default: 0,
   },
 });
 
