@@ -6,6 +6,7 @@ const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Appointment = require("../models/appointment");
 
 const User = require("../models/users");
 const nodemailer = require("../config/nodemailer.config");
@@ -99,13 +100,18 @@ userRouter.post(
 
 userRouter.get("/", auth, async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.signedId });
+    const user = await await User.findOne({ _id: req.signedId });
 
     if (!user) {
       return res.status(400).json({ msg: "Not found the user" });
     }
 
-    res.json(user);
+    const arrAppointment = [];
+    for (i = 0; i < user.schedule.length; i++) {
+      const appointment = await Appointment.findById(user.schedule[i]);
+      arrAppointment.push(appointment);
+    }
+    res.json({ user, arrAppointment });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

@@ -6,22 +6,30 @@ const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Appointment = require("../models/appointment");
+
 const Specialist = require("../models/specialist");
 
 
 // Check Auth
 router.get("/", auth, async (req, res) => {
-  const id = req.sign;
+  const id = req.signedId;
   try {
-    const user = await User.findById({ _id: id }).select("-password").exec();
+    const user = await User.find({ _id: id }).select("-password").exec();
 
     if (!user) {
       throw "No such user found";
     }
-    res.status(200).json({ user });
+    const arrAppointment = [];
+    for (i = 0; i < user.schedule.length; i++) {
+      const appointment = await Appointment.findById(user.schedule[i]);
+      arrAppointment.push(appointment);
+    }
+
+    res.status(200).json({ arrAppointment });
     //
   } catch (err) {
-    res.status(500).json({ errors: `Server Error` });
+    res.status(500).json(err);
   }
 });
 

@@ -62,6 +62,12 @@ const userSchema = mongoose.Schema({
       ref: "appointment",
     },
   ],
+  schedule: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "appointment",
+    },
+  ],
 });
 
 // plugin findorcreate
