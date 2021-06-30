@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const User = require("../models/users");
+const Specialist = require("../models/specialist");
 const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Specialist = require("../models/specialist");
 
 
 // Check Auth
@@ -78,6 +78,7 @@ router.post(
 
       if (isMatch) {
         // create a JWT Token
+        console.log(FoundUser)
         const secret = config.get("jwtSecret");
 
         const token = jwt.sign({ id: FoundUser._id }, secret, {

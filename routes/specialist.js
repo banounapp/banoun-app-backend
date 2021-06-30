@@ -1,11 +1,12 @@
 const express = require("express");
 const Router = express.Router();
 const mongoose = require("mongoose");
+const Appointment = require("../models/appointment");
+const Specialist = require("../models/specialist");
 const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Specialist = require("../models/specialist");
 const nodemailer = require("../config/nodemailer.config");
 const auth = require("../middleware/auth");
 //for image
@@ -16,7 +17,6 @@ const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 // const dbConnection =require('../config/db');
 const connection = require("../connection");
-const Appointment = require("../models/appointment");
 
 const { equal } = require("assert");
 /////////////////////////////////////////////////////////////////////////////////
@@ -45,127 +45,6 @@ connection.once("open", () => {
   gfs.collection("uploads");
 });
 //////////////////////////////////////////////////////////////////////////////////////////
-Router.post(
-  "/",
-  // upload.single('image'),
-  upload.array("image", 4),
-  // git
-  async (req, res) => {
-    //code
-
-    const characters = config.get("Character");
-    let confirm = "";
-    for (let i = 0; i < 6; i++) {
-      confirm += characters[Math.floor(Math.random() * characters.length)];
-    }
-    // console.log(req.body);
-    console.log(confirm);
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        errors: errors.array(),
-      });
-    }
-    try {
-      // destructing Body => username , password
-
-      const {
-        username,
-        password,
-        email,
-        bio,
-        gender,
-        image,
-        phone,
-        job,
-        city,
-        address,
-        Specialization,
-      } = req.body;
-
-      //console.log(req.body, req.files);
-
-      // get user
-
-      const checkUser = await Specialist.findOne({ username }).exec();
-
-      // check if user already exists!
-      console.log(`check user is ${checkUser}`);
-
-      if (checkUser) {
-        return res.status(500).json({ error: [`User Already Exists`] });
-      }
-
-      //bycrypt password
-      let hashPassword = await bycrpt.hash(password, 10);
-
-      console.log(req.files && req.files[0]);
-      // create user in DataBase
-      const specialist = await Specialist.create({
-        username,
-        password: hashPassword,
-        email,
-        bio,
-        NationalID: req.files && req.files[1],
-        gender,
-        phone,
-        job,
-        confirmationCode: confirm,
-        image: req.files && req.files[0],
-        certification: req.files && req.files[2],
-        city,
-        address,
-        Specialization,
-      });
-
-      // create a JWT Token
-      const secret = config.get("jwtSecret");
-
-      const token = jwt.sign({ id: specialist._id }, secret, {
-        expiresIn: 360000,
-      });
-
-      console.log(token);
-
-      //  res.send({ token });
-      res.send({
-        message: "User was registered successfully! Please check your email",
-      });
-      nodemailer.sendConfirmationEmail(
-        specialist.username,
-        specialist.email,
-        specialist.confirmationCode
-      );
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).json({ errors: "Server Error" });
-    }
-  }
-);
-//////////////////////////////////////////////////////////
-Router.get("/", async (req, res) => {
-  try {
-    const specialist = await Specialist.find({ statusjob: "approval" });
-
-    res.json(specialist);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-/////////////////////////////////////////////////////////////////////////////////////
-Router.get("/:id", async (req, res) => {
-  try {
-    const specialist = await Specialist.find({ _id: req.params.id });
-
-    res.json(specialist);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -187,10 +66,7 @@ Router.get("/:id", async (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////
 Router.post(
   "/login",
-  [
-    body("username", "username is required").exists(),
-    body("password", "Password is required").exists(),
-  ],
+  [body("username", "username is required").exists(), body("password", "Password is required").exists()],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -239,8 +115,7 @@ Router.post(
           return res.status(200).send({
             isSuccess: false,
             code: 2,
-            message:
-              "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت ",
+            message: "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت ",
           });
         }
 
@@ -283,10 +158,7 @@ Router.get("/confirm/:confirmationCode", auth, async (req, res) => {
 Router.post(
   "/schedule",
   auth,
-  [
-    body("date", "date is required").exists(),
-    body("time", "time is required").exists(),
-  ],
+  [body("date", "date is required").exists(), body("time", "time is required").exists()],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -296,34 +168,28 @@ Router.post(
     }
 
     try {
-      const { date, time } = req.body;
+      const { date, time, price } = req.body;
+
       // get specialist
-      const appointment = await Appointment.create({
-        Specialist: req.signedId,
-        date,
-        time,
-      });
+      let specialist;
+      const newAppointments = [];
 
-      console.log(appointment);
-      const specialist = await Specialist.findById(req.signedId);
-
-      // check if user specialist exists!
-
-      if (!specialist) {
-        return res.status(200).json({
-          isSuccess: false,
-          code: 1,
-          error: "حدث مشكلة ",
+      for (i = 0; i < time.length; i++) {
+        const appointment = await Appointment.create({
+          Specialist: req.signedId,
+          date: new Date(date),
+          time: time[i],
+          price: price,
         });
+
+        specialist = await Specialist.findById(req.signedId);
+
+        newAppointments.push(appointment._id);
+
+        specialist.schedule.unshift(appointment._id);
+        await specialist.save();
       }
-
-      //   const newappointment={
-      //     date,
-      //     time
-      // }
-
-      specialist.schedule.unshift(appointment._id);
-      await specialist.save();
+      console.log(189, specialist.schedule);
       res.json(specialist);
     } catch (err) {
       console.error(err.message);
@@ -331,6 +197,44 @@ Router.post(
     }
   }
 );
+Router.get("/schedule/:date", auth, async (req, res) => {
+  try {
+    const date = new Date(req.params.date);
+
+   await Specialist.findOne({ _id: req.signedId })
+      .populate('schedule').exec(function (err, conv) {
+        if (err) return res.status(400).send(err.message);
+
+      
+      });
+
+      await Specialist.findOne({ _id: req.signedId })
+      .populate({
+        path : 'schedule',
+        populate : {
+          path : 'user'
+        }
+      }).exec(function (err, specialistInstance) {
+        if (err) {console.log(err.message);return res.status(400).send(err.message)};
+
+       const reservedAppointments = [];
+        const reservedTimes = [];
+        for (i = 0; i < specialistInstance.schedule.length; i++) {
+          if (specialistInstance.schedule[i].date.getTime() == date.getTime()) {
+            reservedAppointments.push(specialistInstance.schedule[i]);
+            reservedTimes.push(specialistInstance.schedule[i].time);
+          }
+        }
+     
+        res.status(200).json({ reservedTimes, reservedAppointments  });
+     
+      });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ errors: "Server Error" });
+  }
+});
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -382,5 +286,111 @@ Router.post(
   }
 );
 
+Router.post(
+  "/",
+  // upload.single('image'),
+  upload.array("image", 4),
+  // git
+  async (req, res) => {
+    //code
+
+    const characters = config.get("Character");
+    let confirm = "";
+    for (let i = 0; i < 6; i++) {
+      confirm += characters[Math.floor(Math.random() * characters.length)];
+    }
+    // console.log(req.body);
+    console.log(confirm);
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    try {
+      // destructing Body => username , password
+
+      const { username, password, email, bio, gender, image, phone, job, city, address, Specialization } = req.body;
+
+      //console.log(req.body, req.files);
+
+      // get user
+
+      const checkUser = await Specialist.findOne({ username }).exec();
+
+      // check if user already exists!
+      console.log(`check user is ${checkUser}`);
+
+      if (checkUser) {
+        return res.status(500).json({ error: [`User Already Exists`] });
+      }
+
+      //bycrypt password
+      let hashPassword = await bycrpt.hash(password, 10);
+
+      console.log(req.files && req.files[0]);
+      // create user in DataBase
+      const specialist = await Specialist.create({
+        username,
+        password: hashPassword,
+        email,
+        bio,
+        NationalID: req.files && req.files[1],
+        gender,
+        phone,
+        job,
+        confirmationCode: confirm,
+        image: req.files && req.files[0],
+        certification: req.files && req.files[2],
+        city,
+        address,
+        Specialization,
+      });
+
+      // create a JWT Token
+      const secret = config.get("jwtSecret");
+
+      const token = jwt.sign({ id: specialist._id }, secret, {
+        expiresIn: 360000,
+      });
+
+      console.log(token);
+
+      //  res.send({ token });
+      res.send({
+        message: "User was registered successfully! Please check your email",
+      });
+      nodemailer.sendConfirmationEmail(specialist.username, specialist.email, specialist.confirmationCode);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ errors: "Server Error" });
+    }
+  }
+);
+//////////////////////////////////////////////////////////
+Router.get("/", async (req, res) => {
+  try {
+    const specialist = await Specialist.find({ statusjob: "approval" });
+
+    res.json(specialist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+/////////////////////////////////////////////////////////////////////////////////////
+Router.get("/:id", async (req, res) => {
+  try {
+    const specialist = await Specialist.find({ _id: req.params.id });
+
+    res.json(specialist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = Router;
+
+//route for searching specialist schedule

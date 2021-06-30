@@ -2,8 +2,8 @@ const express = require("express");
 const Router = express.Router();
 const mongoose = require("mongoose");
 const SpecialistReviews = require("../models/specialistReviews");
-const auth = require("../middleware/auth");
 const Specialist = require("../models/specialist");
+const auth = require("../middleware/auth");
 
 Router.post("/:id", auth, async (req, res) => {
   try {
