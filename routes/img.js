@@ -49,17 +49,10 @@ routerimg.get("/show/:filename", (req, res) => {
       return res.status(404).send({ err: "No file exists" });
     }
 
-    if (
-      file[0].contentType === "image/jpeg" ||
-      file[0].contentType === "img/png" ||
-      file[0].contentType === "img/jfif" ||
-      file[0].contentType === "image/jpg"
-    ) {
-      // read output
+    // read output
+    else {
       const readstream = gfs.createReadStream(file[0].filename);
       readstream.pipe(res);
-    } else {
-      res.status(404).send({ err: "No  image" });
     }
   });
 });
