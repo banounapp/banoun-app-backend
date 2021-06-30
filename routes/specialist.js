@@ -201,12 +201,12 @@ Router.get("/schedule/:date", auth, async (req, res) => {
   try {
     const date = new Date(req.params.date);
 
-   await Specialist.findOne({ _id: req.signedId })
-      .populate('schedule').exec(function (err, conv) {
-        if (err) return res.status(400).send(err.message);
+  //  await Specialist.findOne({ _id: req.signedId })
+  //     .populate('schedule').exec(function (err, conv) {
+  //       if (err) return res.status(400).send(err.message);
 
       
-      });
+  //     });
 
       await Specialist.findOne({ _id: req.signedId })
       .populate({
@@ -368,6 +368,33 @@ Router.post(
     }
   }
 );
+
+
+/////////////////////////////////////////////////////////
+
+
+Router.get("/clients" ,auth,async (req,res)=>{
+  try{
+    console.log(req.signedId)
+    const specialist =await Specialist.findOne({ _id: req.signedId })
+    .populate({
+      path : 'clients',
+      
+    }).exec(function (err, specialistInstance) {
+      if (err) {console.log(err.message);return res.status(400).send(err.message)};
+
+      console.log(specialistInstance.clients)
+      res.status(200).json(specialistInstance.clients  );
+   
+    });
+    console.log(specialist)
+  }
+  catch(e){
+    res.status(404).send("err")
+  }
+})
+
+
 //////////////////////////////////////////////////////////
 Router.get("/", async (req, res) => {
   try {
