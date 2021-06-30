@@ -28,7 +28,8 @@ Router.post("/", auth, async (req, res) => {
         message: "شكرا لك , سيتم تأكيد الحدث ",
       });
     } else {
-      res.status(402).send({
+
+      res.status(402).json({
         message:
           "نأسف لكم لقد تجاوزت عدد المرات المجانية يرجي الاتصال بالادارة لتجديد مرة اخري شكرا لكم ",
       });
