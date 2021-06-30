@@ -1,10 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const connectusSchema = Schema({
- 
-   name:{},
-
-    name: {
+  name: {
     type: String,
     required: true,
   },
@@ -12,19 +9,16 @@ const connectusSchema = Schema({
     type: String,
     required: true,
   },
-    text:{
-        type:String,
-        required:true
-
-    },
-    date:{
-        type:Date,
-        default:Date.now
-    },
-
+  text: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
+const Connectus = mongoose.model("Connectus ", connectusSchema);
 
-const Connectus  = mongoose.model('Connectus ', siteReviewsSchema);
-
-module.exports = Connectus 
+module.exports = Connectus;

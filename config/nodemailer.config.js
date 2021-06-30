@@ -27,3 +27,20 @@ module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
     })
     .catch((err) => console.log(err));
 };
+
+module.exports.sendConnectus = (name, email, confirmationCode) => {
+  transport
+    .sendMail({
+      from: user,
+      to: email,
+      subject: "تواصل معانا",
+      // text: "" +"   " +confirmationCode,
+      html: `<h3>
+  <span  font-family: verdana;"> ${name} شكرا لك</span> : تم استلام رسالتك سوف نتواصل معاك في اقرب وقت 
+    </h3>
+    <b style="color:blue;">عائلة بنون</b>
+    
+    `,
+    })
+    .catch((err) => console.log(err));
+};

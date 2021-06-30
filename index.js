@@ -106,13 +106,8 @@ app.use("/api/specialistReviews", require("./routes/specialistReviews"));
 app.use("/api/SiteReviews", require("./routes/SiteReviews"));
 app.use("/api/posts", require("./routes/posts"));
 app.use("/api/event", require("./routes/event"));
-app.use("/api/specialist",require("./routes/specialist"));
-app.use("/api/appointment",require("./routes/appointment"));
-app.use("/api/specialistReviews",require("./routes/specialistReviews"));
-app.use("/api/SiteReviews",require("./routes/SiteReviews"));
-app.use('/api/posts',require('./routes/posts'));
+app.use("/api/connectus", require("./routes/connectus "));
 app.use('/api/customRoutes',require('./routes/customRoutes'));
-
 
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
