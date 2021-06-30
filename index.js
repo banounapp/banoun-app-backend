@@ -105,5 +105,6 @@ app.use("/api/specialistReviews", require("./routes/specialistReviews"));
 app.use("/api/SiteReviews", require("./routes/SiteReviews"));
 app.use("/api/posts", require("./routes/posts"));
 app.use("/api/event", require("./routes/event"));
+app.use("/api/connectus", require("./routes/connectus "));
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
