@@ -15,7 +15,7 @@ Router.post("/", auth, async (req, res) => {
     await siteReviews.save();
 
     res.send({
-      message: "  شكرا لك  ",
+      siteReviews,
     });
   } catch (err) {
     console.error(err.message);
