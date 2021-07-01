@@ -13,8 +13,10 @@ Router.post("/", auth, async (req, res) => {
       rate,
     });
     await siteReviews.save();
-
-    res.send(siteReviews.populate("user"));
+    const siteReviewsget = await SiteReviews.findById(siteReviews._id).populate(
+      "user"
+    );
+    res.send(siteReviewsget);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
