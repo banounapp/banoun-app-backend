@@ -14,7 +14,7 @@ Router.post("/", auth, async (req, res) => {
     });
     await siteReviews.save();
 
-    res.send(siteReviews);
+    res.send(siteReviews.populate("user"));
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
