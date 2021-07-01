@@ -380,4 +380,22 @@ Router.get("/", auth, async (req, res) => {
   }
 });
 
+//  update image specialist
+
+Router.post("/img/:Id", upload.single("image"), async (req, res) => {
+  try {
+    let { filename } = req.file;
+    console.log(filename);
+    let { Id } = req.params;
+    let specialist = await Specialist.findOneAndUpdate(
+      { _id: Id },
+      { image: req.file },
+      { new: true }
+    ).exec();
+    res.status(200).send({ specialist });
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
+});
+
 module.exports = Router;

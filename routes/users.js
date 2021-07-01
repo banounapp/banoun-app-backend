@@ -1,17 +1,48 @@
 const express = require("express");
 const userRouter = express.Router();
 const auth = require("../middleware/auth");
+const mongoose = require("mongoose");
 
 const { body, validationResult } = require("express-validator");
 const config = require("config");
 const bycrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Appointment = require("../models/appointment");
+const connection = require("../connection");
 
 const User = require("../models/users");
 const nodemailer = require("../config/nodemailer.config");
-
+//for image
+const crypto = require("crypto");
+const path = require("path");
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
 ///////////////// User Register with username and password
-
+const storage = new GridFsStorage({
+  url: "mongodb+srv://omar1234:omar@banoun.lrzmb.mongodb.net/main?retryWrites=true&w=majority",
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString("hex") + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: "uploads",
+        };
+        resolve(fileInfo);
+      });
+    });
+  },
+});
+const upload = multer({ storage });
+let gfs;
+connection.once("open", () => {
+  gfs = Grid(connection.db, mongoose.mongo);
+  gfs.collection("uploads");
+});
 userRouter.post(
   "/",
   [
@@ -99,13 +130,18 @@ userRouter.post(
 
 userRouter.get("/", auth, async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.signedId });
+    const user = await await User.findOne({ _id: req.signedId });
 
     if (!user) {
       return res.status(400).json({ msg: "Not found the user" });
     }
 
-    res.json(user);
+    const arrAppointment = [];
+    for (i = 0; i < user.schedule.length; i++) {
+      const appointment = await Appointment.findById(user.schedule[i]);
+      arrAppointment.push(appointment);
+    }
+    res.json({ user, arrAppointment });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -159,5 +195,22 @@ userRouter.post(
     }
   }
 );
+//  update image user
+
+userRouter.post("/img/:Id", upload.single("image"), async (req, res) => {
+  try {
+    let { filename } = req.file;
+    console.log(filename);
+    let { Id } = req.params;
+    let user = await User.findOneAndUpdate(
+      { _id: Id },
+      { image: req.file },
+      { new: true }
+    ).exec();
+    res.status(200).send({ user });
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
+});
 
 module.exports = userRouter;
