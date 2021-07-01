@@ -100,6 +100,10 @@ const specialistSchema = Schema({
     type: Number,
     default: 0,
   },
+  NofRates: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Specialist = mongoose.model("Specialist", specialistSchema);

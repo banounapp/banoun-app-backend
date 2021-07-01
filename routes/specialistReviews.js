@@ -9,24 +9,38 @@ Router.post("/:id", auth, async (req, res) => {
   try {
     const { text, rate } = req.body;
 
-    const specialist = await Specialist.findById(req.params.id);
-    if (specialist) {
-      const specialistReviews = await SpecialistReviews.create({
-        Specialist: req.params.id,
-        user: req.signedId,
-        text,
-        rate,
-      });
-      await specialistReviews.save();
+    const specialistReviews = await SpecialistReviews.create({
+      Specialist: req.params.id,
+      user: req.signedId,
+      text,
+      rate,
+    });
+    await specialistReviews.save();
 
-      res.send({
-        message: " شكرا لك  ",
-      });
-    } else {
-      res.send({
-        message: "يوجد مشكلة حاول مرة اخري",
-      });
-    }
+    const UpdateSpecialistRate = ({ rate, NofRates }, newRate) => {
+      if (NofRates == 0) {
+        specialistRate = newRate;
+        return specialistRate;
+      }
+
+      specialistRate = (rate * NofRates + newRate) / (NofRates + 1);
+
+      return specialistRate;
+    };
+    const specialist = await Specialist.findOne({ _id: req.params.id });
+    specialist.rate = UpdateSpecialistRate(specialist, rate);
+    specialist.NofRates = specialist.NofRates + 1;
+
+    await specialist.save();
+    res.send({
+      newRate: specialist.rate,
+      message: " شكرا لك  ",
+    });
+    //  else {
+    //   res.send({
+    //     message: "يوجد مشكلة حاول مرة اخري",
+    //   });
+    // }
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

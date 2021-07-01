@@ -33,7 +33,7 @@ module.exports.sendConnectus = (name, email, confirmationCode) => {
     .sendMail({
       from: user,
       to: email,
-      subject: "تواصل معانا",
+      subject: "تواصل معنا",
       // text: "" +"   " +confirmationCode,
       html: `<h3>
   <span  font-family: verdana;"> ${name} شكرا لك</span> : تم استلام رسالتك سوف نتواصل معاك في اقرب وقت 
