@@ -28,7 +28,6 @@ Router.post("/", auth, async (req, res) => {
         message: "شكرا لك , سيتم تأكيد الحدث ",
       });
     } else {
-
       res.status(402).json({
         message:
           "نأسف لكم لقد تجاوزت عدد المرات المجانية يرجي الاتصال بالادارة لتجديد مرة اخري شكرا لكم ",
@@ -39,5 +38,20 @@ Router.post("/", auth, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+/////////////////////////////////////////////////////////////////////////////
 
+Router.get("/accepted", async (req, res) => {
+  try {
+    const event = await Event.find({
+      status: "accepted",
+    })
+      .populate("Specialist")
+      .sort({ Date: -1 });
+
+    res.send(event);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
 module.exports = Router;

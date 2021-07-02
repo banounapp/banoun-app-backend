@@ -66,7 +66,10 @@ connection.once("open", () => {
 //////////////////////////////////////////////////////////////////////////////////////////
 Router.post(
   "/login",
-  [body("username", "username is required").exists(), body("password", "Password is required").exists()],
+  [
+    body("username", "username is required").exists(),
+    body("password", "Password is required").exists(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -115,7 +118,8 @@ Router.post(
           return res.status(200).send({
             isSuccess: false,
             code: 2,
-            message: "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت ",
+            message:
+              "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت ",
           });
         }
 
@@ -158,7 +162,10 @@ Router.get("/confirm/:confirmationCode", auth, async (req, res) => {
 Router.post(
   "/schedule",
   auth,
-  [body("date", "date is required").exists(), body("time", "time is required").exists()],
+  [
+    body("date", "date is required").exists(),
+    body("time", "time is required").exists(),
+  ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -201,23 +208,26 @@ Router.get("/schedule/:date", auth, async (req, res) => {
   try {
     const date = new Date(req.params.date);
 
-  //  await Specialist.findOne({ _id: req.signedId })
-  //     .populate('schedule').exec(function (err, conv) {
-  //       if (err) return res.status(400).send(err.message);
+    //  await Specialist.findOne({ _id: req.signedId })
+    //     .populate('schedule').exec(function (err, conv) {
+    //       if (err) return res.status(400).send(err.message);
 
-      
-  //     });
+    //     });
 
-      await Specialist.findOne({ _id: req.signedId })
+    await Specialist.findOne({ _id: req.signedId })
       .populate({
-        path : 'schedule',
-        populate : {
-          path : 'user'
+        path: "schedule",
+        populate: {
+          path: "user",
+        },
+      })
+      .exec(function (err, specialistInstance) {
+        if (err) {
+          console.log(err.message);
+          return res.status(400).send(err.message);
         }
-      }).exec(function (err, specialistInstance) {
-        if (err) {console.log(err.message);return res.status(400).send(err.message)};
 
-       const reservedAppointments = [];
+        const reservedAppointments = [];
         const reservedTimes = [];
         for (i = 0; i < specialistInstance.schedule.length; i++) {
           if (specialistInstance.schedule[i].date.getTime() == date.getTime()) {
@@ -225,11 +235,9 @@ Router.get("/schedule/:date", auth, async (req, res) => {
             reservedTimes.push(specialistInstance.schedule[i].time);
           }
         }
-     
-        res.status(200).json({ reservedTimes, reservedAppointments  });
-     
-      });
 
+        res.status(200).json({ reservedTimes, reservedAppointments });
+      });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ errors: "Server Error" });
@@ -311,7 +319,19 @@ Router.post(
     try {
       // destructing Body => username , password
 
-      const { username, password, email, bio, gender, image, phone, job, city, address, Specialization } = req.body;
+      const {
+        username,
+        password,
+        email,
+        bio,
+        gender,
+        image,
+        phone,
+        job,
+        city,
+        address,
+        Specialization,
+      } = req.body;
 
       //console.log(req.body, req.files);
 
@@ -361,7 +381,11 @@ Router.post(
       res.send({
         message: "User was registered successfully! Please check your email",
       });
-      nodemailer.sendConfirmationEmail(specialist.username, specialist.email, specialist.confirmationCode);
+      nodemailer.sendConfirmationEmail(
+        specialist.username,
+        specialist.email,
+        specialist.confirmationCode
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ errors: "Server Error" });
@@ -369,31 +393,29 @@ Router.post(
   }
 );
 
-
 /////////////////////////////////////////////////////////
 
+Router.get("/clients", auth, async (req, res) => {
+  try {
+    console.log(req.signedId);
+    const specialist = await Specialist.findOne({ _id: req.signedId })
+      .populate({
+        path: "clients",
+      })
+      .exec(function (err, specialistInstance) {
+        if (err) {
+          console.log(err.message);
+          return res.status(400).send(err.message);
+        }
 
-Router.get("/clients" ,auth,async (req,res)=>{
-  try{
-    console.log(req.signedId)
-    const specialist =await Specialist.findOne({ _id: req.signedId })
-    .populate({
-      path : 'clients',
-      
-    }).exec(function (err, specialistInstance) {
-      if (err) {console.log(err.message);return res.status(400).send(err.message)};
-
-      console.log(specialistInstance.clients)
-      res.status(200).json(specialistInstance.clients  );
-   
-    });
-    console.log(specialist)
+        console.log(specialistInstance.clients);
+        res.status(200).json(specialistInstance.clients);
+      });
+    console.log(specialist);
+  } catch (e) {
+    res.status(404).send("err");
   }
-  catch(e){
-    res.status(404).send("err")
-  }
-})
-
+});
 
 
 //  update image specialist
