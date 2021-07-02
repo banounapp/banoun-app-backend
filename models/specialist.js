@@ -81,7 +81,12 @@ const specialistSchema = Schema({
       // },
     },
   ],
-
+  events: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+    },
+  ],
   rate: {
     type: Number,
     default: 0,
@@ -91,10 +96,19 @@ const specialistSchema = Schema({
 
     default: "specialist",
   },
-  clients:[{ type: mongoose.Schema.Types.ObjectId,
-    ref: "user",}]
 
-  
+  clients:[{ type: mongoose.Schema.Types.ObjectId,
+    ref: "user",}] ,
+
+  eventnumber: {
+    type: Number,
+    default: 0,
+  },
+  NofRates: {
+    type: Number,
+    default: 0,
+  },
+
 });
 
 const Specialist = mongoose.model("Specialist", specialistSchema);

@@ -6,8 +6,8 @@ const dotenv = require("dotenv");
 const helmet = require("helmet");
 
 // Cors
-let cors = require('cors')
- 
+let cors = require("cors");
+
 // database
 require("./config/db");
 
@@ -21,12 +21,11 @@ require("./passports/FacebookPassport");
 app.set("view engine", "ejs");
 app.set("trust proxy", 1);
 
-
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
 //body parsing for body in request
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 ////////   session use   /////
 
@@ -47,7 +46,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors())
+app.use(cors());
 
 ////////////////////////////////////// Route to check if works ///////////////
 app.get("/", function (req, res) {
@@ -100,11 +99,14 @@ app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/category", require("./routes/category"));
 app.use("/api/upload", require("./routes/img"));
-app.use("/api/specialist",require("./routes/specialist"));
-app.use("/api/appointment",require("./routes/appointment"));
-app.use("/api/specialistReviews",require("./routes/specialistReviews"));
-app.use("/api/SiteReviews",require("./routes/SiteReviews"));
-app.use('/api/posts',require('./routes/posts'));
+
+app.use("/api/specialist", require("./routes/specialist"));
+app.use("/api/appointment", require("./routes/appointment"));
+app.use("/api/specialistReviews", require("./routes/specialistReviews"));
+app.use("/api/SiteReviews", require("./routes/SiteReviews"));
+app.use("/api/posts", require("./routes/posts"));
+app.use("/api/event", require("./routes/event"));
+app.use("/api/connectus", require("./routes/connectus "));
 app.use('/api/customRoutes',require('./routes/customRoutes'));
 
 
