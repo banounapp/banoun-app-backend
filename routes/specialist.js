@@ -395,28 +395,6 @@ Router.get("/clients" ,auth,async (req,res)=>{
 })
 
 
-//////////////////////////////////////////////////////////
-Router.get("/", async (req, res) => {
-  try {
-    const specialist = await Specialist.find({ statusjob: "approval" });
-
-    res.json(specialist);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-/////////////////////////////////////////////////////////////////////////////////////
-Router.get("/:id", async (req, res) => {
-  try {
-    const specialist = await Specialist.find({ _id: req.params.id });
-
-    res.json(specialist);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
 
 //  update image specialist
 
@@ -435,6 +413,31 @@ Router.post("/img/:Id", upload.single("image"), async (req, res) => {
     res.status(404).send(err.message);
   }
 });
+
+/////////////////////////////////////////////////////////////////////////////////////
+Router.get("/:id", async (req, res) => {
+  try {
+    const specialist = await Specialist.find({ _id: req.params.id });
+
+    res.json(specialist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+//////////////////////////////////////////////////////////
+Router.get("/", async (req, res) => {
+  try {
+    const specialist = await Specialist.find({ statusjob: "approval" });
+
+    res.json(specialist);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 
 module.exports = Router;
 
