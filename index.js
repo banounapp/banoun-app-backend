@@ -23,6 +23,8 @@ app.set("trust proxy", 1);
 
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
+app.use(cors());
+
 //body parsing for body in request
 app.use(express.json());
 app.use(express.static("public"));
@@ -46,7 +48,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors());
 
 ////////////////////////////////////// Route to check if works ///////////////
 app.get("/", function (req, res) {
