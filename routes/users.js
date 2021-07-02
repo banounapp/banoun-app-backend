@@ -43,6 +43,115 @@ connection.once("open", () => {
   gfs = Grid(connection.db, mongoose.mongo);
   gfs.collection("uploads");
 });
+
+
+
+
+userRouter.get("/:id/appointments", auth, async (req, res) => {
+  try {
+     const user = await User.findOne({ _id: req.params.id }).populate({path:"schedule", populate : {
+      path : 'Specialist'
+    }}).exec(
+       function(err, user){
+         if(err){console.log(err.message); return res.status(500).send("not found")}; 
+         return res.status(200).json(user.schedule)
+       }
+     )
+
+    
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+
+
+userRouter.post(
+  "/edit",
+  [auth],
+
+  async (req, res) => {
+    const { firstName, lastName, username, phone, age, city } = req.body;
+
+    console.log(req.body);
+    //Build profile object
+
+    const profileFields = {};
+    // profileFields._id=req.signedId;
+
+    if (firstName) profileFields.firstName = firstName;
+    if (lastName) profileFields.lastName = lastName;
+    if (phone) profileFields.phone = phone;
+    if (age) profileFields.age = age;
+    if (city) profileFields.city = city;
+    if (username) profileFields.username = username;
+
+    try {
+      let user = await User.findOne({ _id: req.signedId });
+
+      if (user) {
+        user = await User.findOneAndUpdate(
+          { _id: req.signedId },
+
+          { $set: profileFields },
+          { new: true },
+          (err, document) => {
+            if (!err) {
+              console.log(document);
+            } else {
+              console.log(err);
+            }
+          }
+        );
+
+        return res.json(user);
+      }
+
+      res.json("not found the user");
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
+);
+//  update image user
+
+userRouter.post("/img/:Id", upload.single("image"), async (req, res) => {
+  try {
+    let { filename } = req.file;
+    console.log(filename);
+    let { Id } = req.params;
+    let user = await User.findOneAndUpdate(
+      { _id: Id },
+      { image: req.file },
+      { new: true }
+    ).exec();
+    res.status(200).send({ user });
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
+});
+userRouter.get("/", auth, async (req, res) => {
+  try {
+    const user = await await User.findOne({ _id: req.signedId });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Not found the user" });
+    }
+
+    const arrAppointment = [];
+    for (i = 0; i < user.schedule.length; i++) {
+      const appointment = await Appointment.findById(user.schedule[i]);
+      arrAppointment.push(appointment);
+    }
+    res.json({ user, arrAppointment });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 userRouter.post(
   "/",
   [
@@ -128,111 +237,5 @@ userRouter.post(
   }
 );
 
-
-
-
-userRouter.get("/:id/appointments", auth, async (req, res) => {
-  try {
-     const user = await User.findOne({ _id: req.params.id }).populate({path:"schedule", populate : {
-      path : 'Specialist'
-    }}).exec(
-       function(err, user){
-         if(err){console.log(err.message); return res.status(500).send("not found")}; 
-         return res.status(200).json(user.schedule)
-       }
-     )
-
-    
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-
-userRouter.get("/", auth, async (req, res) => {
-  try {
-    const user = await await User.findOne({ _id: req.signedId });
-
-    if (!user) {
-      return res.status(400).json({ msg: "Not found the user" });
-    }
-
-    const arrAppointment = [];
-    for (i = 0; i < user.schedule.length; i++) {
-      const appointment = await Appointment.findById(user.schedule[i]);
-      arrAppointment.push(appointment);
-    }
-    res.json({ user, arrAppointment });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
-
-userRouter.post(
-  "/edit",
-  [auth],
-
-  async (req, res) => {
-    const { firstName, lastName, username, phone, age, city } = req.body;
-
-    console.log(req.body);
-    //Build profile object
-
-    const profileFields = {};
-    // profileFields._id=req.signedId;
-
-    if (firstName) profileFields.firstName = firstName;
-    if (lastName) profileFields.lastName = lastName;
-    if (phone) profileFields.phone = phone;
-    if (age) profileFields.age = age;
-    if (city) profileFields.city = city;
-    if (username) profileFields.username = username;
-
-    try {
-      let user = await User.findOne({ _id: req.signedId });
-
-      if (user) {
-        user = await User.findOneAndUpdate(
-          { _id: req.signedId },
-
-          { $set: profileFields },
-          { new: true },
-          (err, document) => {
-            if (!err) {
-              console.log(document);
-            } else {
-              console.log(err);
-            }
-          }
-        );
-
-        return res.json(user);
-      }
-
-      res.json("not found the user");
-    } catch (err) {
-      res.status(500).send(err);
-    }
-  }
-);
-//  update image user
-
-userRouter.post("/img/:Id", upload.single("image"), async (req, res) => {
-  try {
-    let { filename } = req.file;
-    console.log(filename);
-    let { Id } = req.params;
-    let user = await User.findOneAndUpdate(
-      { _id: Id },
-      { image: req.file },
-      { new: true }
-    ).exec();
-    res.status(200).send({ user });
-  } catch (err) {
-    res.status(404).send(err.message);
-  }
-});
 
 module.exports = userRouter;
