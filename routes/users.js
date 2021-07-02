@@ -137,8 +137,8 @@ userRouter.get("/:id/appointments", auth, async (req, res) => {
       path : 'Specialist'
     }}).exec(
        function(err, user){
-         if(err) res.status(500); 
-         res.status(200).json(user.schedule)
+         if(err) return res.status(500).send("not found"); 
+         return res.status(200).json(user.schedule)
        }
      )
 
