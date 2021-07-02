@@ -21,6 +21,12 @@ const appointmentSchema = Schema({
     enum: ['online', 'cash'],
 
     },
+    attending :{
+        // required: true,
+        type: String, 
+        enum: ['online', 'offline'],
+    
+        },
     time:{
         required: true,
         type: String, 
@@ -31,6 +37,15 @@ const appointmentSchema = Schema({
         enum: ['available', 'reserved'],
         default: 'available'
       },
+    price:{
+          type:Number
+      },
+      joinUrl:{
+          type:String
+      } , 
+      paymentId:{
+          type:String
+      }
   
 });
 

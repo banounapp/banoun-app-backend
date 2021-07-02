@@ -67,7 +67,7 @@ const specialistSchema = Schema({
   schedule: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "appointment",
+      ref: "Appointment",
       // date:{
 
       // },
@@ -96,6 +96,10 @@ const specialistSchema = Schema({
 
     default: "specialist",
   },
+
+  clients:[{ type: mongoose.Schema.Types.ObjectId,
+    ref: "user",}] ,
+
   eventnumber: {
     type: Number,
     default: 0,
@@ -104,6 +108,7 @@ const specialistSchema = Schema({
     type: Number,
     default: 0,
   },
+
 });
 
 const Specialist = mongoose.model("Specialist", specialistSchema);
