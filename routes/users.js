@@ -97,6 +97,28 @@ userRouter.post(
   }
 );
 
+
+
+
+userRouter.get("/:id/appointments", auth, async (req, res) => {
+  try {
+     const user = await User.findOne({ _id: req.params.id }).populate({path:"schedule", populate : {
+      path : 'Specialist'
+    }}).exec(
+       function(err, user){
+         if(err) res.status(500); 
+         res.status(200).json(user.schedule)
+       }
+     )
+
+    
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 userRouter.get("/", auth, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.signedId });

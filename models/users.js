@@ -59,7 +59,7 @@ const userSchema = mongoose.Schema({
   schedule: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "appointment",
+      ref: "Appointment",
     },
   ],
 });

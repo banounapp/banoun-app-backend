@@ -59,22 +59,16 @@ console.log(req.signedId)
   
 
     if (paymentMethod == "online") {
-      //stripe elements way///
-      //  console.log(req.body)
-      // const { id } = req.body;
-      // const amount = req.body.meeting.price*100 ;
+  
 
       const payment = await stripe.paymentIntents.create({
         amount: appointmentPrice *100,
         currency: "USD",
-        // description: "Delicious empanadas",
         payment_method: paymentId,
         confirm: true,
       });
 
-      // const specialist = await Specialist.findById(req.params.id);
       if (attending == "online") {
-        //talk to zoom api to generate zoom link
         let axios_options = {
           url: `https://api.zoom.us/v2/users/${process.env.ZOOM_EMAIL}/meetings/`,
           method: "post",
@@ -97,19 +91,15 @@ console.log(req.signedId)
         let JOIN_URL;
         axios(axios_options)
           .then(function (response) {
-            JOIN_URL = response.data.join_url;
             return response.data.join_url;
-            // res.send(response.data);
           })
           .then((joinUrl) => {
             console.log("changed");
             
-            updateAppointmentAndUser(JOIN_URL,payment.id)
+            updateAppointmentAndUser(joinUrl,payment.id)
             return res.status(200).json({
               status: "success",
-              // receipt: payment.receipt_url,
               joinUrl: JOIN_URL,
-              // appointment,
               message: "شكرا لك , سيتم تأكيد الحجز ",
             })}).catch((e)=>
             {
@@ -126,50 +116,7 @@ console.log(req.signedId)
       updateAppointmentAndUser() ; 
       res.status(200).send(" sucess , please attend in time & pay to doctor")
     }
-    //  updateAppointment();
-    //   updateUserSchedule();
-
-      // const appointment = await Appointment.findOneAndUpdate(
-      //   { _id: _id },
-      //   {
-      //     status: "reserved",
-      //     attending: attending,
-      //     paymentMethod: paymentMethod,
-      //   }
-      // );
-
-      // await appointment.save();
-
-      // const user = await User.findById(req.signedId);
-      // user.schedule.unshift(appointment)
-
-
-      // await user.save();
-      // res.status(200).send("ok");
-
-    //create a source
-    // const card = await stripe.customers.createSource(
-    //     arr[1],
-    //     {source: {
-    //         object:"card",
-    //         number: 4000056655665556,
-    //         exp_month: 12,
-    //         exp_year:2022,
-
-    //     }}
-    //   );
-
-    // //payout
-    // const payout = await stripe.payouts.create({
-    //     amount: 10,
-    //     currency: 'usd',
-    //     method:"instant",
-    //     source_type:"card",
-    //     destination:card,
-    //   });
-
-    //   console.log(payout)
-    //create meeting
+    
 
     /*********modify appointment ***********/
   } catch (error) {
