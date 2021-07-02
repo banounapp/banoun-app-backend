@@ -99,7 +99,7 @@ console.log(req.signedId)
             updateAppointmentAndUser(joinUrl,payment.id)
             return res.status(200).json({
               status: "success",
-              joinUrl: JOIN_URL,
+              joinUrl: joinUrl,
               message: "شكرا لك , سيتم تأكيد الحجز ",
             })}).catch((e)=>
             {
