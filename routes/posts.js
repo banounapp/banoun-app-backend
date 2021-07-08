@@ -73,8 +73,23 @@ router.post(
 
 router.get("/", async (req, res) => {
   try {
-    const posts = await Post.find().populate("Specialist").sort({ date: -1 });
-
+    const posts = await Post.find()
+      .populate("Specialist")
+      .populate({
+        path: "comments",
+        populate: {
+          select: ["image", "username"],
+          path: "Specialist",
+        },
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          select: ["image", "username"],
+          path: "user",
+        },
+      })
+      .sort({ date: -1 });
 
     res.json(posts);
   } catch (err) {
