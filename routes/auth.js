@@ -78,7 +78,7 @@ router.post(
 
       const FoundUser = USER || SPECIALIST;
 
-      const isMatch = bycrpt.compare(password, FoundUser.password);
+      const isMatch =await bycrpt.compare(password, FoundUser.password);
 
       if (isMatch) {
         // create a JWT Token
