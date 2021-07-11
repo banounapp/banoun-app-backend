@@ -103,14 +103,21 @@ router.post(
                 : "جاري التحقق من المعلومات الشخصية و سيتم الرد في اقرب وقت",
           });
         }
-        res.send({
-          code: 0,
-          isSuccess: true,
-          data: FoundUser,
-          token: token,
-          type: type,
-        });
+        else{
+
+          res.send({
+            code: 0,
+            isSuccess: true,
+            data: FoundUser,
+            token: token,
+            type: type,
+          });
+        }
       }
+      else{
+        res.status(401).send("wrong password")
+      }
+     
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ errors: "Server Error" });
