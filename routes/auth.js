@@ -117,6 +117,9 @@ router.post(
       else{
         res.status(401).send("wrong password")
       }
+      else{
+        res.status(401).send("wrong password")
+      }
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ errors: "Server Error" });
